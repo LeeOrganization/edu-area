@@ -1,0 +1,185 @@
+import React, { Component } from 'react';
+import './App.css';
+import Button from './Custom/Button.js'
+
+class App extends Component {
+    state = {
+        button:[
+            {id:0,name:'Red',text:'首页'},
+            {id:1,name:'Green',text:'美食'},
+            {id:2,name:'Blue',text:'服装'},
+            {id:3,name:'Orange',text:'个人中心'}
+        ],
+        isShow:false
+    }
+    handleClick = (newValue) =>{
+        this.setState({
+            button:[
+                {name:newValue,text:'首页'},
+                {name:newValue,text:'美食'},
+                {name:'Green',text:'服装'},
+                {name:'Orange',text:'个人中心'}
+            ]
+        });
+    }
+
+    changeColor(newValue){
+        this.setState({
+            button:[
+                {name:'Blue',text:'首页'},
+                {name:'Red',text:'美食'},
+                {name:newValue,text:'服装'},
+                {name:'Orange',text:'个人中心'}
+            ]
+        });
+    }
+
+
+    /*nameChangedHandler = (event) =>{
+       const id = event.target.getAttribute("data-id");
+        switch (id) {
+            case "1":
+                this.setState({
+                    button:[
+                        {name:'Blue',text:event.target.value},
+                        {name:'Red',text:'美食'},
+                        {name:'Green',text:'服装'},
+                        {name:'Orange',text:'个人中心'}
+                    ]
+                });
+                break;
+            case "2":
+                this.setState({
+                    button:[
+                        {name:'Blue',text:'首页'},
+                        {name:'Red',text:event.target.value},
+                        {name:'Green',text:'服装'},
+                        {name:'Orange',text:'个人中心'}
+                    ]
+                });
+                break;
+            case "3":
+                this.setState({
+                    button:[
+                        {name:'Blue',text:'首页'},
+                        {name:'Red',text:'美食'},
+                        {name:'Green',text:event.target.value},
+                        {name:'Orange',text:'个人中心'}
+                    ]
+                });
+                break;
+            case "4":
+                this.setState({
+                    button:[
+                        {name:'Blue',text:'首页'},
+                        {name:'Red',text:'美食'},
+                        {name:'Green',text:'服装'},
+                        {name:'Orange',text:event.target.value}
+                    ]
+                });
+                break;
+
+
+        }
+
+    }*/
+
+    nameChangedHandler = (event,id)=>{
+        //event中存储了要更改的值，id中存储了要修改哪一个对象的值
+
+        const changedId = this.state.button.findIndex(btn=>{
+            return btn.id === id;
+        });
+
+
+        const btnCopy = [...this.state.button];
+
+        const changeBtn = {...btnCopy[changedId]};
+        //const changeBtn = btnCopy[changedId];
+
+        changeBtn.text = event.target.value;
+
+        btnCopy[changedId] = changeBtn;
+
+        this.setState({
+            button:btnCopy
+        });
+    }
+    contentShows = ()=>{
+        const isShows = this.state.isShow;
+        this.setState({
+            isShow:!isShows
+        });
+    }
+
+
+    deleteDomHandler = (btnIndex)=>{
+        const btnCopy = [...this.state.button];
+        console.log(btnCopy,btnIndex);
+        btnCopy.splice(btnIndex,1);
+        this.setState({
+            button:btnCopy
+        });
+    }
+
+  render() {
+        let isButton = null;
+        if(this.state.isShow){
+            isButton = (
+               <div>
+
+                   <Button
+                    id={3}
+                    changed={this.nameChangedHandler}
+                    name={this.state.button[2].name}
+                    text={this.state.button[2].text}/>
+                   <Button
+                       id={4}
+                       changed={this.nameChangedHandler}
+                       name={this.state.button[3].name}
+                       text={this.state.button[3].text}/>
+               </div>
+            );
+        }
+
+        const styles = [];
+        if(this.state.button.length <= 3){
+            styles.push('pink');
+        }
+        if(this.state.button.length <= 2){
+            styles.push('purple');
+
+        }
+    return (
+      <div className={'App'}>
+          <h1>Hello World !!</h1>
+          <p className={styles.join(" ")}>我是一朵漂亮的小花</p>
+
+          <button  onClick={this.handleClick.bind(this,'Black')}>点击事件</button>
+          <button  onClick={this.contentShows}>展示内容</button>
+          {this.state.button.map((btn,index) => {
+              return <Button
+                  clickEvent={this.deleteDomHandler.bind(this,index)}
+                  changed={(event) => this.nameChangedHandler(event,btn.id)}
+                  key={btn.id}
+                  name={btn.name}
+                  text={btn.text}/>
+          })}
+         {/* <Button
+              id={1}
+              changed={this.nameChangedHandler}
+              name={this.state.button[0].name} text={this.state.button[0].text}
+              myMouse={this.changeColor.bind(this,'Black')}/>
+          <Button
+              id={2}
+              changed={this.nameChangedHandler}
+              name={this.state.button[1].name}
+              text={this.state.button[1].text}/>*/}
+          {isButton}
+          {/*<Button name={'Red'} text={'合作方'}>欢迎来到合众易成</Button>*/}
+      </div>
+    );
+  }
+}
+
+export default App;
